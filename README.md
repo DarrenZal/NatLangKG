@@ -48,6 +48,7 @@ We request a budget of $20K-$30K to fairly compensate contributors, beta testers
 As the lead developer, I am open to the idea of working collaboratively with other developers and sharing the workload. This collaboration would further foster the spirit of community and decentralization that underpins this project.
 
 
+\
 **Appendix:**
 [1] graph embeddings and text embeddings can both be extremely useful for a variety of tasks, especially when used together. Here are a few ways that these types of embeddings could create value:
    * Semantic Search: This is likely one of the most immediate applications. By combining text embeddings with graph embeddings, you can create a more robust semantic search engine for the knowledge graph. Text embeddings can be used to understand the semantic content of the user's query, while graph embeddings can help provide results that are not only semantically relevant but also structurally relevant within the context of the graph.
