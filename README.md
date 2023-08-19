@@ -6,38 +6,44 @@ Our project aims to harness the capabilities of advanced language models to crea
 
 To facilitate integration with other projects and maximize synergy, our project will utilize existing transformer-based text embeddings and, as a novel approach, leverage graph embeddings for a better understanding of the DKG structure. We will provide compensation to contributors for valuable contributions such as training data and model improvements.
 
-**Milestones, Timeline, and Expected Impact:**
-**Phase 1 (Month 1): Dataset Collection and Creation**
-The first phase involves creating a dataset of SPARQL queries matched with their natural language counterparts. We'll encourage community contributions, verified through a validation process and rewarded through smart contracts. During this phase, we will also explore and identify parts of the DKG to be used for creating graph embeddings[1]. 
+**Milestones, Timeline, and Expected Impact:** \
+**Milestone 1 (Completion by September 15th): Detailed Specification** \
+Dataset Collection and Creation Strategy:\
+   * Define strategies for gathering SPARQL query training data.
+   * Specify strategies for interfacing with DKG knowledge assets.
+   * Review potential open-source datasets and integration possibilities.
+   * Architectural and sequence diagrams for the proposed system.
+
+**Milestone 2 (Completion by the end of October): Prototype Development**
+Development of Graph Embeddings and LLM Training:
+   * Based on the insights from Milestone 1, initiate the development of graph embeddings.
+   * Select and finalize methods for learning graph embeddings, which can be either DeepWalk, Node2Vec, GCNs, GraphSAGE, or any combination depending on the DKG's characteristics.
+   * Start training the Large Language Model with the dataset defined in Milestone 1.
+   * Prepare a prototype that can be demonstrated, which involves the conversion between natural language and SPARQL and providing natural language outputs.
+
+The first phase involves defin a dataset of SPARQL queries matched with their natural language counterparts. We'll encourage community contributions, verified through a validation process and rewarded through smart contracts. During this phase, we will also explore and identify parts of the DKG to be used for creating graph embeddings[1]. 
 
 strategies for gathering SPARQL query training data:
 * Crowdsourcing: This could involve creating a platform where community members can submit natural language queries and their corresponding SPARQL queries. To incentivize participation, we could offer compensation. However, this would require careful validation to ensure the quality of the submitted data.
     * strategy to DKG knowledge assets:
         * Data Extraction: Extract data from the DKG and use this data to create a variety of SPARQL queries. This could involve selecting a subset of the DKG, and writing a script to generate different SPARQL queries that extract various types of information from this subset.
         * Human Labeling: Then, we could pay people to label these queries by writing the corresponding natural language question or statement for each query.
-* Open Source Datasets: There may already exist datasets that map natural language queries to SPARQL queries. One notable dataset is the LC-QuAD, which includes around 30,000 SPARQL queries and their corresponding natural language questions. These datasets could potentially be used as a starting point for your model, but they might not perfectly fit the context of the OriginTrail DKG. 
-* Synthetic Data Generation: We could potentially generate synthetic training data. This could involve creating a wide range of SPARQL queries, executing them against your graph, and then using the results to generate natural language questions. However, this requires careful design to ensure that the synthetic data accurately represents the queries users will actually submit. 
-* Data Augmentation: This is a technique where existing data is modified to create new examples. For example, one could take a single question-query pair and generate many similar pairs by replacing synonyms, rephrasing the question, or altering the query structure without changing its meaning.  Speaking of synonyms, it may be helpful to add alternative labels to nodes and edges to improve the performance of machine learning models trained on the data.  Synonyms could be added to the graph, enriching knowledge assets, however this additional data would need quality control and using it would increase the complexity and computational resources of training the model.  Perhaps an area of further research.
+        * Open Source Datasets: There may already exist datasets that map natural language queries to SPARQL queries. One notable dataset is the LC-QuAD, which includes around 30,000 SPARQL queries and their corresponding natural language questions. These datasets could potentially be used as a starting point for your model, but they might not perfectly fit the context of the OriginTrail DKG. 
 
-**Phase 2 (Months 2-4): Development of Graph Embeddings and LLM Training**
-Building on the insights gained from the initial dataset collection, we'll develop graph embeddings to complement the existing text embeddings, which will provide a richer understanding of the DKG and improve the precision of the natural language to SPARQL conversion. Concurrently, we will fine-tune an open-source Large Language Model using the dataset from Phase 1.
+Integration:
+   * Blend the trained LLM with the developed graph embeddings to create a preliminary tool that combines both.
+   * Ensure the prototype is hosted in an externally accessible environment ready for the ChatDKG open office hour demonstration.
 
-Graph Embeddings:
-There are several popular methods for learning graph embeddings, including:
-* DeepWalk and Node2Vec: These methods work by performing random walks on the graph to generate sequences of nodes, similar to sentences in a text corpus. These sequences are then fed into a Word2Vec-like model to learn embeddings for each node. 
-* Graph Convolutional Networks (GCNs): These methods work by iteratively aggregating information from each node's neighbors to update its embedding. 
-* GraphSAGE: This method extends GCNs by allowing nodes to sample a fixed number of neighbors at each layer of the model, which can make it more scalable for large graphs. 
-These are just a few examples, and the potential applications could be even broader depending on the specific characteristics of the OriginTrail Decentralized Knowledge Graph. The combination of text embeddings and graph embeddings allows you to leverage both the semantic content of the data and its structural relationships, which can provide a more holistic view of the information in the graph.  Thi
+**Milestone 3 (Completion by December 31st 2023): Finalization and Launch**
+Refinement and Optimization:
+   * Refine the AI model based on insights and feedback from the prototype phase.
+   * Optimize the user interface and backend processes.
+   * Launch, Beta Testing, and Final Refinement:
 
-LLM Training:
-We will use the dataset from Phase 1 to fine-tune a pre-trained open source Large Language model to convert between natural language and SPARQL, as well as giving a natural language response back with the query results.  We will research other options as well such as using models geared specifically to do language-to-logic transformations.
-
-
-**Phase 3 (Month 5): Integration**
-We will blend our freshly trained LLM with the graph embeddings to construct a comprehensive tool that captures the best of both worlds. The goal is to leverage the strength of the language model in understanding natural language and the power of the graph embeddings in understanding the structure and context of the DKG.
-
-**Phase 4 (Month 6): Launch, Beta Testing, and Refinement**
-With the tool now ready, we will wrap it in a user-friendly interface and conduct a comprehensive beta testing phase, rewarding testers for their time and invaluable feedback. Insights from the testing phase will be instrumental in refining the AI model and interface, ensuring it is optimized for end-users.
+Release the tool with a user-friendly interface.
+   * Conduct comprehensive beta testing, collating feedback and further optimizing the model.
+   * Final documentation including Milestone 1 specification.
+   * Package final codebase for delivery.
 
 **Expected Impact:**
 By transforming how users interact with the OriginTrail DKG, we expect to boost its utility and accessibility, promoting its widespread use. By enriching knowledge assets with structural metadata, our solution will provide a more nuanced understanding of the DKG, making the data querying process more intuitive, and lowering barriers for non-technical users.
@@ -47,7 +53,16 @@ We request a budget of $20K-$30K to fairly compensate contributors, beta testers
 
 As the lead developer, I am open to the idea of working collaboratively with other developers and sharing the workload. This collaboration would further foster the spirit of community and decentralization that underpins this project.
 
-![Frame 1 (3)](https://github.com/DarrenZal/NatLangKG/assets/3492713/fc8fa2b4-d991-49b6-b1fa-a15550dde835)
+**Architecture:** \
+![Frame 1 (3)](https://github.com/DarrenZal/NatLangKG/assets/3492713/fc8fa2b4-d991-49b6-b1fa-a15550dde835) \
+This diagram merges the training, testing, validation, and production processes.  
+The user interface is where users can interact with the DKG in natural language.
+The interface can also be where users choose DKG assets to be used to train a model or generate graph embeddings.
+
+The NLP Engine is where the LLM and Graph embeddings are maintained.  This interfaces with the DKG to run querys.
+
+Possible area of future research is distributing the NLP Engine such that it is not centralized, and could be securely managed by users to learn from their specific datasets.
+
 
 \
 **Appendix:**
@@ -58,6 +73,11 @@ As the lead developer, I am open to the idea of working collaboratively with oth
    * Recommendation Systems: In a system where users can own and trade knowledge assets, graph embeddings and text embeddings could be used together to build a more effective recommendation system. The system could use text embeddings to understand the semantic content of the assets and graph embeddings to understand their positions within the graph, allowing it to make recommendations that are both semantically relevant to the user's interests and structurally important within the context of the graph.
    * Anomaly Detection: Graph embeddings can be useful for anomaly detection in the knowledge graph. Anomalies in the graph could indicate erroneous data or potential fraud, and graph embeddings could help identify nodes or subgraphs that are structurally unusual. Combined with text embeddings, this could provide a powerful tool for ensuring the integrity of the data in the knowledge graph.
 
+There are several popular methods for learning graph embeddings, including:
+* DeepWalk and Node2Vec: These methods work by performing random walks on the graph to generate sequences of nodes, similar to sentences in a text corpus. These sequences are then fed into a Word2Vec-like model to learn embeddings for each node. 
+* Graph Convolutional Networks (GCNs): These methods work by iteratively aggregating information from each node's neighbors to update its embedding. 
+* GraphSAGE: This method extends GCNs by allowing nodes to sample a fixed number of neighbors at each layer of the model, which can make it more scalable for large graphs. 
+These are just a few examples, and the potential applications could be even broader depending on the specific characteristics of the OriginTrail Decentralized Knowledge Graph. The combination of text embeddings and graph embeddings allows you to leverage both the semantic content of the data and its structural relationships, which can provide a more holistic view of the information in the graph.  
 
 Questions for future research:  
   A question-answering system typically takes in a question posed in natural language, processes and understands the question, retrieves the relevant information, and delivers the answer, usually also in natural language.
