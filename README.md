@@ -47,6 +47,7 @@ We request a budget of $20K-$30K to fairly compensate contributors, beta testers
 
 As the lead developer, I am open to the idea of working collaboratively with other developers and sharing the workload. This collaboration would further foster the spirit of community and decentralization that underpins this project.
 
+![Frame 1 (3)](https://github.com/DarrenZal/NatLangKG/assets/3492713/fc8fa2b4-d991-49b6-b1fa-a15550dde835)
 
 \
 **Appendix:**
