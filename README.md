@@ -63,6 +63,12 @@ The NLP Engine is where the LLM and Graph embeddings are maintained.  This inter
 
 Possible area of future research is distributing the NLP Engine such that it is not centralized, and could be securely managed by users to learn from their specific datasets.
 
+\
+**Examples:**
+* Metacrisis Mapping \
+    Darren is a close collaborator with a group of people working to map the metacrisis (see Metacrisis.xyz).  This project could make use of a knwoledge graph, with nodes representing various crises (climate change, economic inequality, etc.) and edges illustrating their interconnections. This could also have nodes for solutions and their connections to the crises they address.  A natural language interface to such a map would be useful for the public to make sense of the metacrisis.  Such a metacrisis map could be used to train an AI model to facilitate natural language interaction.  The existing knowledge graph is a markdown text database which does not provide the benefits of a full semantic graph.  See https://explorer.gitcoin.co/#/round/1/0x421510312c40486965767be5ea603aa8a5707983/0x421510312c40486965767be5ea603aa8a5707983-56
+* Bioregional Mapping \
+    Darren is also involved with a group of people working to create a global network of bioregional economies.  This involves helping people to map their bioregions, including the resources, organizations, and people in their region.  Each bioregion could create a knowledge graph with their contextual data as a "map" which could be used to train an AI model to generate a natural language interface.  There could also be a global graph that holds knowledge relevant to all bioregions.
 
 \
 **Appendix:**
