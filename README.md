@@ -8,7 +8,7 @@ To facilitate integration with other projects and maximize synergy, our project 
 
 **Milestones, Timeline, and Expected Impact:** \
 **Milestone 1 (Completion by September 15th): Detailed Specification** \
-Dataset Collection and Creation Strategy:\
+Dataset Collection and Creation Strategy:
    * Define strategies for gathering SPARQL query training data.
    * Specify strategies for interfacing with DKG knowledge assets.
    * Review potential open-source datasets and integration possibilities.
