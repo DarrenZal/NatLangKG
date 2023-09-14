@@ -21,14 +21,18 @@ Development of Graph Embeddings and LLM Training:
    * Start training the Large Language Model with the dataset defined in Milestone 1.
    * Prepare a prototype that can be demonstrated, which involves the conversion between natural language and SPARQL and providing natural language outputs.
 
-The first phase involves defin a dataset of SPARQL queries matched with their natural language counterparts. We'll encourage community contributions, verified through a validation process and rewarded through smart contracts. During this phase, we will also explore and identify parts of the DKG to be used for creating graph embeddings[1]. 
+The first phase involves defining a dataset of SPARQL queries matched with their natural language counterparts. We'll encourage community contributions, verified through a validation process. During this phase, we will also explore and identify parts of the DKG to be used for creating graph embeddings[1]. 
 
 strategies for gathering SPARQL query training data:
-* Crowdsourcing: This could involve creating a platform where community members can submit natural language queries and their corresponding SPARQL queries. To incentivize participation, we could offer compensation. However, this would require careful validation to ensure the quality of the submitted data.
-    * strategy to DKG knowledge assets:
+* Crowdsourcing: This could involve creating a platform where community members can submit natural language queries and their corresponding SPARQL queries. To incentivize participation, we could offer compensation. However, this would require careful validation to ensure the quality of the submitted data. 
+    * strategy to use DKG knowledge assets:
         * Data Extraction: Extract data from the DKG and use this data to create a variety of SPARQL queries. This could involve selecting a subset of the DKG, and writing a script to generate different SPARQL queries that extract various types of information from this subset.
         * Human Labeling: Then, we could pay people to label these queries by writing the corresponding natural language question or statement for each query.
-        * Open Source Datasets: There may already exist datasets that map natural language queries to SPARQL queries. One notable dataset is the LC-QuAD, which includes around 30,000 SPARQL queries and their corresponding natural language questions. These datasets could potentially be used as a starting point for your model, but they might not perfectly fit the context of the OriginTrail DKG. 
+        * Machine Labeling:  We can explore using a LLM to label queries with corresponding natural language, and use humans to validate the labels.
+        * Open Source Datasets: There may already exist datasets that map natural language queries to SPARQL queries. One notable dataset is the LC-QuAD, which includes around 30,000 SPARQL queries and their corresponding natural language questions. These datasets could potentially be used as a starting point for the model, but they might not perfectly fit the context of the OriginTrail DKG, so fine tuning on the DKG will likely be a useful step.
+     
+strategy for learning natural language presentation of query results:
+* Similar to training on queries, we can train the LLM to provide a natural language description of results returned from a query.  We can explore existing models, and fine tune them with examples where DKG query results are labelled with a natural language counterpart.  The labelling could be done by humans or possibly a LLM with humans in the loop to verify or tweak the results.
 
 Integration:
    * Blend the trained LLM with the developed graph embeddings to create a preliminary tool that combines both.
