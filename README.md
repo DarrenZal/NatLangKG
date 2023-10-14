@@ -52,11 +52,6 @@ Release the tool with a user-friendly interface.
 **Expected Impact:**
 By transforming how users interact with the OriginTrail DKG, we expect to boost its utility and accessibility, promoting its widespread use. By enriching knowledge assets with structural metadata, our solution will provide a more nuanced understanding of the DKG, making the data querying process more intuitive, and lowering barriers for non-technical users.
 
-**Budget:**
-We request a budget of $20K-$30K to fairly compensate contributors, beta testers, and our development team. This budget will also cover the costs of cloud computing resources for model training and software development costs. Our goal is to utilize these funds in a way that aligns with the decentralized and community-driven spirit of the OriginTrail DKG.
-
-As the lead developer, I am open to the idea of working collaboratively with other developers and sharing the workload. This collaboration would further foster the spirit of community and decentralization that underpins this project.
-
 **Architecture:** \
 ![Frame 1 (3)](https://github.com/DarrenZal/NatLangKG/assets/3492713/fc8fa2b4-d991-49b6-b1fa-a15550dde835) \
 This diagram merges the training, testing, validation, and production processes.  
