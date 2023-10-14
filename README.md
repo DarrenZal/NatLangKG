@@ -15,13 +15,12 @@ Dataset Collection and Creation Strategy:
    * Architectural and sequence diagrams for the proposed system.
 
 **Milestone 2 (Completion by the end of October): Prototype Development**
-Development of Graph Embeddings and LLM Training:
-   * Based on the insights from Milestone 1, initiate the development of graph embeddings.
-   * Select and finalize methods for learning graph embeddings, which can be either DeepWalk, Node2Vec, GCNs, GraphSAGE, or any combination depending on the DKG's characteristics.
-   * Start training the Large Language Model with the dataset defined in Milestone 1.
+Development of Question Answering system:
+   * Based on the insights from Milestone 1, initiate the development of necessary components, such as text and graph embeddings[1], for entity and relation mapping.
+   * Train a Large Language Model with datasets of natural language-and-SPARQL questions.
    * Prepare a prototype that can be demonstrated, which involves the conversion between natural language and SPARQL and providing natural language outputs.
 
-The first phase involves defining a dataset of SPARQL queries matched with their natural language counterparts. We'll encourage community contributions, verified through a validation process. During this phase, we will also explore and identify parts of the DKG to be used for creating graph embeddings[1]. 
+The first phase involves defining a dataset of SPARQL queries matched with their natural language counterparts.
 
 strategies for gathering SPARQL query training data:
 * Crowdsourcing: This could involve creating a platform where community members can submit natural language queries and their corresponding SPARQL queries. To incentivize participation, we could offer compensation. However, this would require careful validation to ensure the quality of the submitted data. 
@@ -35,8 +34,8 @@ strategy for learning natural language presentation of query results:
 * Similar to training on queries, we can train the LLM to provide a natural language description of results returned from a query.  We can explore existing models, and fine tune them with examples where DKG query results are labelled with a natural language counterpart.  The labelling could be done by humans or possibly a LLM with humans in the loop to verify or tweak the results.
 
 Integration:
-   * Blend the trained LLM with the developed graph embeddings to create a preliminary tool that combines both.
-   * Ensure the prototype is hosted in an externally accessible environment ready for the ChatDKG open office hour demonstration.
+   * Blend the trained LLM with the developed text and graph embeddings to create a preliminary tool that combines both.
+   * Ensure the prototype is hosted in an externally accessible environment.
 
 **Milestone 3 (Completion by December 31st 2023): Finalization and Launch**
 Refinement and Optimization:
