@@ -4,7 +4,7 @@
 **Description:**
 Our project aims to harness the capabilities of advanced language models to create a natural language interface for the OriginTrail Decentralized Knowledge Graph (DKG). We plan to empower non-technical users to query Knowledge Assets with ease, transforming natural language input into SPARQL and providing understandable natural language outputs. Our initiative promotes a broader adoption of the DKG by making it more user-friendly, while also contributing to the democratization and trustworthiness of AI by rooting the model in a verifiable data source.
 
-To facilitate integration with other projects and maximize synergy, our project will utilize existing transformer-based text embeddings and, as a novel approach, leverage graph embeddings for a better understanding of the DKG structure. We will provide compensation to contributors for valuable contributions such as training data and model improvements.
+To facilitate integration with other projects and maximize synergy, our project will utilize existing transformer-based text embeddings. We will provide compensation to contributors for valuable contributions such as training data and model improvements.
 
 **Milestones, Timeline, and Expected Impact:** \
 **Milestone 1 (Completion by September 15th): Detailed Specification** \
@@ -18,20 +18,9 @@ Dataset Collection and Creation Strategy:
 Development of Question Answering system:
    * Based on the insights from Milestone 1, initiate the development of necessary components, such as text and graph embeddings[1], for entity and relation mapping.
    * Train a Large Language Model with datasets of natural language-and-SPARQL questions.
+     update: this proved to be expensive for training large datasets such as LC-QuAD for many epochs, especcially considering that new models like GPT-4 are already good at creating SPARQL queries given the relevant ontology and entities.  We plan to explore Few shot learning with a few examples as a more affordable option.
    * Prepare a prototype that can be demonstrated, which involves the conversion between natural language and SPARQL and providing natural language outputs.
-
-The first phase involves defining a dataset of SPARQL queries matched with their natural language counterparts.
-
-strategies for gathering SPARQL query training data:
-* Crowdsourcing: This could involve creating a platform where community members can submit natural language queries and their corresponding SPARQL queries. To incentivize participation, we could offer compensation. However, this would require careful validation to ensure the quality of the submitted data. 
-    * strategy to use DKG knowledge assets:
-        * Data Extraction: Extract data from the DKG and use this data to create a variety of SPARQL queries. This could involve selecting a subset of the DKG, and writing a script to generate different SPARQL queries that extract various types of information from this subset.
-        * Human Labeling: Then, we could pay people to label these queries by writing the corresponding natural language question or statement for each query.
-        * Machine Labeling:  We can explore using a LLM to label queries with corresponding natural language, and use humans to validate the labels.
-        * Open Source Datasets: There may already exist datasets that map natural language queries to SPARQL queries. One notable dataset is the LC-QuAD, which includes around 30,000 SPARQL queries and their corresponding natural language questions. These datasets could potentially be used as a starting point for the model, but they might not perfectly fit the context of the OriginTrail DKG, so fine tuning on the DKG will likely be a useful step.
-     
-strategy for learning natural language presentation of query results:
-* Similar to training on queries, we can train the LLM to provide a natural language description of results returned from a query.  We can explore existing models, and fine tune them with examples where DKG query results are labelled with a natural language counterpart.  The labelling could be done by humans or possibly a LLM with humans in the loop to verify or tweak the results.
+     update: can be found here: https://github.com/DarrenZal/ChatDKG/tree/main/examples/langchain
 
 Integration:
    * Blend the trained LLM with the developed text and graph embeddings to create a preliminary tool that combines both.
