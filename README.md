@@ -17,10 +17,10 @@ Dataset Collection and Creation Strategy:
 **Milestone 2 (Completion by the end of October): Prototype Development**
 Development of Question Answering system:
    * Based on the insights from Milestone 1, initiate the development of necessary components, such as text and graph embeddings[1], for entity and relation mapping.
-   * Train a Large Language Model with datasets of natural language-and-SPARQL questions.
-     update: this proved to be expensive for training large datasets such as LC-QuAD for many epochs, especcially considering that new models like GPT-4 are already good at creating SPARQL queries given the relevant ontology and entities.  We plan to explore Few shot learning with a few examples as a more affordable option.
-   * Prepare a prototype that can be demonstrated, which involves the conversion between natural language and SPARQL and providing natural language outputs.
-     update: can be found here: https://github.com/DarrenZal/ChatDKG/tree/main/examples/langchain
+   * Train a Large Language Model with datasets of natural language-and-SPARQL questions.  
+*update: this proved to be expensive for training large datasets such as LC-QuAD for many epochs, especcially considering that new models like GPT-4 are already good at creating SPARQL queries given the relevant ontology and entities.  We plan to explore Few shot learning with a few examples as a more affordable option.
+   * Prepare a prototype that can be demonstrated, which involves the conversion between natural language and SPARQL and providing natural language outputs.  
+*update: can be found here: https://github.com/DarrenZal/ChatDKG/tree/main/examples/langchain
 
 Integration:
    * Blend the trained LLM with the developed text and graph embeddings to create a preliminary tool that combines both.
