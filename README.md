@@ -2,7 +2,8 @@
 **AI-Enhanced Semantic Interfacing for Decentralized Knowledge Graphs**
 
 **Description:**
-Our project aims to harness the capabilities of advanced language models to create a natural language interface for the OriginTrail Decentralized Knowledge Graph (DKG). We plan to empower non-technical users to query Knowledge Assets with ease, transforming natural language input into SPARQL and providing understandable natural language outputs. Our initiative promotes a broader adoption of the DKG by making it more user-friendly, while also contributing to the democratization and trustworthiness of AI by rooting the model in a verifiable data source.
+Our project aims to harness the capabilities of advanced language models to create a natural language interface for the OriginTrail Decentralized Knowledge Graph (DKG), via ChatDKG - an open framework for trusted AI based on OriginTrail DKG: https://github.com/OriginTrail/ChatDKG \
+We plan to empower non-technical users to query Knowledge Assets with ease, transforming natural language input into SPARQL and providing understandable natural language outputs. Our initiative promotes a broader adoption of the DKG by making it more user-friendly, while also contributing to the democratization and trustworthiness of AI by rooting the model in a verifiable data source.
 
 To facilitate integration with other projects and maximize synergy, our project will utilize existing transformer-based text embeddings. We will provide compensation to contributors for valuable contributions such as training data and model improvements.
 
