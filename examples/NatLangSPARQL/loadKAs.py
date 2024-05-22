@@ -27,7 +27,7 @@ async def get_asset_data(ual):
         print(f"Error getting asset data for {ual}: {e}")
         return None
 
-async def load_kas_and_generate_ontology(ka_dids, ontology_url=None):
+async def load_kas_and_generate_ontology(ka_dids, output_file, ontology_url=None):
     ka_data_list = []
     for did in ka_dids:
         ka_data = await get_asset_data(did)
@@ -37,18 +37,15 @@ async def load_kas_and_generate_ontology(ka_dids, ontology_url=None):
     if ontology_url:
         ontology = generate_ontology_with_context(ka_data_list, ontology_url)
     else:
-        ontology = generate_ontology(ka_data_list)
+        ontology = generate_ontology(ka_data_list, output_file)
 
-    with open("ontology.json", "w") as f:
-        json.dump(ontology, f, indent=2)
-
-    print("Ontology file generated: ontology.json")
+    print(f"Ontology file generated: {output_file}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Load KAs and generate ontology")
     parser.add_argument("ka_dids", nargs="+", help="List of KA DIDs")
+    parser.add_argument("--output-file", default="ontology.ttl", help="Output file path for the generated ontology")
     parser.add_argument("--ontology-url", help="Ontology URL")
-
     args = parser.parse_args()
 
-    load_kas_and_generate_ontology(args.ka_dids, args.ontology_url)
+    load_kas_and_generate_ontology(args.ka_dids, args.output_file, args.ontology_url)
