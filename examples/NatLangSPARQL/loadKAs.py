@@ -9,15 +9,15 @@ from Utils.KAtoOntology import generate_ontology
 load_dotenv()
 
 # Initialize the DKG client on OriginTrail DKG Testnet
-dkg = DKG(
-    endpoint=os.getenv("OT_NODE_HOSTNAME"),
-    port=8900,
-    blockchain={
-        "name": "otp::testnet",
-        "publicKey": os.getenv("WALLET_PUBLIC_KEY"),
-        "privateKey": os.getenv("WALLET_PRIVATE_KEY"),
-    },
+ot_node_hostname = os.getenv("OT_NODE_HOSTNAME")+":8900"
+node_provider = NodeHTTPProvider(ot_node_hostname)
+blockchain_provider = BlockchainProvider(
+    os.getenv("RPC_ENDPOINT"), 
+    os.getenv("WALLET_PRIVATE_KEY")
 )
+
+# Initialize the DKG client
+dkg = DKG(node_provider, blockchain_provider)
 
 async def get_asset_data(ual):
     try:
