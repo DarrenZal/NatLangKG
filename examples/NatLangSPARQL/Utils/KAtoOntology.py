@@ -327,7 +327,7 @@ def apply_consolidation(properties, consolidation):
         new_ranges = {consolidation.get(cls, cls) for cls in info['ranges']}
         properties[prop] = {'domains': new_domains, 'ranges': new_ranges}
 
-def rdf_to_owl(file_paths, output_file):
+def generate_ontology(file_paths, output_file):
     classes = set()
     properties = {}
     defined_entities = {}  # Keep track of defined entities and their types
@@ -425,11 +425,3 @@ def rdf_to_owl(file_paths, output_file):
                 file.write("    rdfs:range owl:Thing .\n")
 
             file.write("\n")
-
-# Convert RDF to OWL
-jsonld_files = [
-    './KnowledgeAsset.json',
-    # Add more file paths as needed
-]
-output_file_path = './ontology_output.ttl'
-rdf_to_owl(jsonld_files, output_file_path)
