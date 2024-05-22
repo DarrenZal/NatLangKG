@@ -35,7 +35,7 @@ async def load_kas_and_generate_ontology(ka_dids, output_file, ontology_url=None
             ka_data_list.append(ka_data)
 
     if ontology_url:
-        ontology = generate_ontology_with_context(ka_data_list, ontology_url)
+        ontology = generate_ontology_with_context(ka_data_list, ontology_url, output_file)
     else:
         ontology = generate_ontology(ka_data_list, output_file)
 
