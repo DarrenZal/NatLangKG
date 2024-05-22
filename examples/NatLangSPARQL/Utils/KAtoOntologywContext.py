@@ -127,7 +127,3 @@ def extract_used_ontology(dataset_files, ontology_url, output_file):
     with open(output_file, "w") as file:
         file.write(used_ontology_data)
 
-jsonld_files = ['./KnowledgeAsset.json']
-output_file_path = './ontology.jsonld'
-ontology_url = 'https://darrenzal.github.io/ChatDKG/REAcontext.jsonld'
-extract_used_ontology(jsonld_files, ontology_url, output_file_path)
