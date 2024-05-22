@@ -3,8 +3,8 @@ import json
 import os
 from dkg import DKG
 from dotenv import load_dotenv
-from ./Utils/KAtoOntologyContext import generate_ontology_with_context
-from ./Utils/KAtoOntology import generate_ontology
+from Utils.KAtoOntologyContext import generate_ontology_with_context
+from Utils.KAtoOntology import generate_ontology
 
 load_dotenv()
 
