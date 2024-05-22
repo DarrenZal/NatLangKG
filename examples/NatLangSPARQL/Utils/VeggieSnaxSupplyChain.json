@@ -1,0 +1,111 @@
+[
+  {
+    "@context": "https://darrenzal.github.io/ChatDKG/REAcontext.jsonld",
+    "@id": "https://example.com/veggies",
+    "@type": "vf:EconomicResource",
+    "vf:resourceClassifiedAs": "https://example.com/vegetable",
+    "vf:onhandQuantity": {
+      "om2:hasNumericalValue": 100,
+      "om2:hasUnit": "https://example.com/kilogram"
+    }
+  },
+  {
+    "@context": "https://darrenzal.github.io/ChatDKG/REAcontext.jsonld",
+    "@id": "https://example.com/farm",
+    "@type": "vf:Agent",
+    "vf:name": "Green Acres Farm"
+  },
+  {
+    "@context": "https://darrenzal.github.io/ChatDKG/REAcontext.jsonld",
+    "@id": "https://example.com/farmToCompany",
+    "@type": "vf:EconomicEvent",
+    "vf:action": "https://w3id.org/valueflows/ont/vf#transfer",
+    "vf:provider": "https://example.com/farm",
+    "vf:receiver": "https://example.com/company",
+    "vf:resourceInventoriedAs": "https://example.com/veggies",
+    "vf:resourceQuantity": {
+      "om2:hasNumericalValue": 100,
+      "om2:hasUnit": "https://example.com/kilogram"
+    },
+    "vf:eventStart": "2023-04-01T10:00:00Z"
+  },
+  {
+    "@context": "https://darrenzal.github.io/ChatDKG/REAcontext.jsonld",
+    "@id": "https://example.com/company",
+    "@type": "vf:Agent",
+    "vf:name": "Veggie Snax Co."
+  },
+  {
+    "@context": "https://darrenzal.github.io/ChatDKG/REAcontext.jsonld",
+    "@id": "https://example.com/production",
+    "@type": "vf:Process",
+    "vf:name": "Veggie Snax Production"
+  },
+  {
+    "@context": "https://darrenzal.github.io/ChatDKG/REAcontext.jsonld",
+    "@id": "https://example.com/productionConsumption",
+    "@type": "vf:EconomicEvent",
+    "vf:action": "https://w3id.org/valueflows/ont/vf#consume",
+    "vf:provider": "https://example.com/company",
+    "vf:receiver": "https://example.com/production",
+    "vf:resourceInventoriedAs": "https://example.com/veggies",
+    "vf:resourceQuantity": {
+      "om2:hasNumericalValue": 80,
+      "om2:hasUnit": "https://example.com/kilogram"
+    },
+    "vf:eventStart": "2023-04-02T08:00:00Z",
+    "vf:inputOf": "https://example.com/production"
+  },
+  {
+    "@context": "https://darrenzal.github.io/ChatDKG/REAcontext.jsonld",
+    "@id": "https://example.com/snax",
+    "@type": "vf:EconomicResource",
+    "vf:resourceClassifiedAs": "https://example.com/veggieSnax",
+    "vf:onhandQuantity": {
+      "om2:hasNumericalValue": 800,
+      "om2:hasUnit": "https://example.com/package"
+    }
+  },
+  {
+    "@context": "https://darrenzal.github.io/ChatDKG/REAcontext.jsonld",
+    "@id": "https://example.com/productionOutput",
+    "@type": "vf:EconomicEvent",
+    "vf:action": "https://w3id.org/valueflows/ont/vf#produce",
+    "vf:provider": "https://example.com/production",
+    "vf:receiver": "https://example.com/company",
+    "vf:resourceInventoriedAs": "https://example.com/snax",
+    "vf:resourceQuantity": {
+      "om2:hasNumericalValue": 800,
+      "om2:hasUnit": "https://example.com/package"
+    },
+    "vf:eventStart": "2023-04-02T16:00:00Z",
+    "vf:outputOf": "https://example.com/production"
+  },
+  {
+    "@context": "https://darrenzal.github.io/ChatDKG/REAcontext.jsonld",
+    "@id": "https://example.com/store",
+    "@type": "vf:Agent",
+    "vf:name": "Neighborhood Market"
+  },
+  {
+    "@context": "https://darrenzal.github.io/ChatDKG/REAcontext.jsonld",
+    "@id": "https://example.com/companyToStore",
+    "@type": "vf:EconomicEvent",
+    "vf:action": "https://w3id.org/valueflows/ont/vf#transfer",
+    "vf:provider": "https://example.com/company",
+    "vf:receiver": "https://example.com/store",
+    "vf:resourceInventoriedAs": "https://example.com/snax",
+    "vf:resourceQuantity": {
+      "om2:hasNumericalValue": 50,
+      "om2:hasUnit": "https://example.com/package"
+    },
+    "vf:eventStart": "2023-04-03T11:00:00Z"
+  },
+  {
+    "@context": "https://darrenzal.github.io/ChatDKG/REAcontext.jsonld",
+    "@id": "https://example.com/veggieSnax",
+    "@type": "vf:ResourceSpecification",
+    "vf:name": "Veggie Snax",
+    "vf:description": "Delicious vegetable snacks"
+  }
+]
