@@ -53,7 +53,7 @@ def adjust_domain_range(graph, uri, new_values, property_type):
             graph.add((uri, prop_uri, union_bnode))
     print(f"Updated {property_type} for {uri}: {new_values}")
 
-def extract_used_ontology(dataset_files, ontology_url, output_file):
+def generate_ontology_with_context(dataset_files, ontology_url, output_file):
     response = requests.get(ontology_url)
     ontology_data = response.json()
     ontology_graph = Graph()
