@@ -2,6 +2,7 @@ import argparse
 import json
 import os
 from dkg import DKG
+from dkg.providers import BlockchainProvider, NodeHTTPProvider
 from dotenv import load_dotenv
 from Utils.KAtoOntologywContext import generate_ontology_with_context
 from Utils.KAtoOntology import generate_ontology
