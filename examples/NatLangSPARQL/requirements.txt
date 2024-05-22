@@ -1,0 +1,6 @@
+argparse
+dkg
+python-dotenv
+openai
+requests
+rdflib
