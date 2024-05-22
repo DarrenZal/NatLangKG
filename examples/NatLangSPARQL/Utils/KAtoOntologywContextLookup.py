@@ -167,7 +167,3 @@ def extract_used_ontology(dataset_files, output_file):
     used_ontology_data = used_ontology_graph.serialize(format='json-ld', context=context["@context"], indent=2)
     with open(output_file, "w") as file:
         file.write(used_ontology_data)
-
-jsonld_files = ['./KnowledgeAsset.json']
-output_file_path = './ontology_output.jsonld'
-extract_used_ontology(jsonld_files, output_file_path)
