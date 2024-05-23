@@ -24,23 +24,36 @@ def infer_range_from_id(url, defined_entities, classes):
 def extract_prefixes(json_data):
     """Extract prefixes from JSON-LD data."""
     prefixes = {}
+    
+    def add_prefix(uri):
+        print(uri)
+        prefix = uri.rsplit('#', 1)[0] + '#' if '#' in uri else uri.rsplit('/', 1)[0] + '/'
+        if prefix not in prefixes.values():
+            prefixes[f"p{len(prefixes)}"] = prefix
+
+    def extract_from_value(value):
+        if isinstance(value, str) and value.startswith('http'):
+            add_prefix(value)
+        elif isinstance(value, list):
+            for item in value:
+                extract_from_value(item)
+        elif isinstance(value, dict):
+            for k, v in value.items():
+                if k.startswith('http'):
+                    add_prefix(k)
+                extract_from_value(v)
+
     if isinstance(json_data, dict):
         for k, v in json_data.items():
-            if isinstance(v, str) and v.startswith('http'):
-                prefix = v.rsplit('#', 1)[0] + '#' if '#' in v else v.rsplit('/', 1)[0] + '/'
-                if prefix not in prefixes.values():
-                    prefixes[f"p{len(prefixes)}"] = prefix
-            elif isinstance(v, list):
-                for item in v:
-                    if isinstance(item, str) and item.startswith('http'):
-                        prefix = item.rsplit('#', 1)[0] + '#' if '#' in item else item.rsplit('/', 1)[0] + '/'
-                        if prefix not in prefixes.values():
-                            prefixes[f"p{len(prefixes)}"] = prefix
-                    elif isinstance(item, dict):
-                        prefixes.update(extract_prefixes(item))
-            elif isinstance(v, dict):
-                prefixes.update(extract_prefixes(v))
+            if k.startswith('http'):
+                add_prefix(k)
+            extract_from_value(v)
+    elif isinstance(json_data, list):
+        for item in json_data:
+            extract_from_value(item)
+
     return prefixes
+
 
 def resolve_prefix(term, prefixes):
     """Resolve a term to its prefix and local name using the given prefixes."""
@@ -131,12 +144,7 @@ def process_jsonld_data(json_data, defined_entities, all_prefixes, classes, prop
     prefixes = extract_prefixes(json_data)
     all_prefixes.update(prefixes)
 
-    if "@graph" in json_data:
-        assertions = json_data["@graph"]
-    elif "assertion" in json_data:
-        assertions = json_data["assertion"]
-    else:
-        assertions = [json_data]
+    assertions = json_data  # Assertion data is already extracted
 
     if isinstance(assertions, dict):
         assertions = [assertions]
@@ -327,33 +335,21 @@ def apply_consolidation(properties, consolidation):
         new_ranges = {consolidation.get(cls, cls) for cls in info['ranges']}
         properties[prop] = {'domains': new_domains, 'ranges': new_ranges}
 
-def generate_ontology(file_paths, output_file):
+def generate_ontology(jsonld_data_list, output_file):
     classes = set()
     properties = {}
     defined_entities = {}  # Keep track of defined entities and their types
     all_prefixes = {}
 
     # Process JSON-LD data
-    for file_path in file_paths:
-        with open(file_path, 'r') as file:
-            file_content = file.read()
-            json_data = None
-            try:
-                json_data = json.loads(file_content)
-            except json.JSONDecodeError:
-                # If the JSON is not valid, try to extract the JSON data manually
-                start_index = file_content.find('{"operation":')
-                end_index = file_content.rfind('}') + 1
-                json_data_str = file_content[start_index:end_index]
-                json_data_str = json_data_str.replace('\\"', '"')
-                json_data_str = json_data_str.replace('\\[', '[')
-                json_data_str = json_data_str.replace('\\]', ']')
-                json_data = json.loads(json_data_str)
-
-            if json_data:
-                prefixes = extract_prefixes(json_data)
-                all_prefixes.update(prefixes)
-                process_jsonld_data(json_data, defined_entities, all_prefixes, classes, properties)
+    for json_data in jsonld_data_list:
+        print("json_data")
+        print(json_data)
+        prefixes = extract_prefixes(json_data)
+        all_prefixes.update(prefixes)
+        print("all_prefixes")
+        print(all_prefixes)
+        process_jsonld_data(json_data, defined_entities, all_prefixes, classes, properties)
 
     consolidation, consolidated_classes = consolidate_classes(properties)
     apply_consolidation(properties, consolidation)
@@ -407,7 +403,6 @@ def generate_ontology(file_paths, output_file):
                         domain_classes.append(f"<{domain}>")
                 domain_classes_str = ' '.join(domain_classes)
                 file.write(f"    rdfs:domain [ a owl:Class ; owl:unionOf ({domain_classes_str}) ] ;\n")
-                print(f"Writing domain for property {prop_write}: {domain_classes_str}")
 
             # Handle ranges
             if prop_info['ranges']:
@@ -420,7 +415,6 @@ def generate_ontology(file_paths, output_file):
                         range_classes.add(f"<{range_class}>")
                 range_classes_str = ' '.join(range_classes)
                 file.write(f"    rdfs:range [ a owl:Class ; owl:unionOf ({range_classes_str}) ] .\n")
-                print(f"Writing range for property {prop_write}: {range_classes_str}")
             else:
                 file.write("    rdfs:range owl:Thing .\n")
 
