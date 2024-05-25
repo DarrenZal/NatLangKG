@@ -1,6 +1,7 @@
 import json
 import requests
 from rdflib import Graph, URIRef, BNode, RDF, RDFS, Literal, OWL
+from .JSONLDtoTTL import convert_jsonld_to_ttl
 
 def create_rdf_list(union_list, graph):
     if not union_list:
@@ -41,6 +42,7 @@ def inline_union_list(ontology_graph, used_ontology_graph, subject, predicate, b
     used_ontology_graph.set((subject, predicate, rdf_list))
     processed_lists[(subject, predicate)] = True
 
+
 def adjust_domain_range(graph, uri, new_values, property_type):
     prop_uri = RDFS.domain if property_type == 'domain' else RDFS.range
     for s, p, o in list(graph.triples((uri, prop_uri, None))):
@@ -53,19 +55,28 @@ def adjust_domain_range(graph, uri, new_values, property_type):
             graph.add((uri, prop_uri, union_bnode))
     print(f"Updated {property_type} for {uri}: {new_values}")
 
-def generate_ontology_with_context(dataset_files, ontology_url, output_file):
+def generate_ontology_with_context(jsonld_data_list, ontology_url):
     response = requests.get(ontology_url)
-    ontology_data = response.json()
+    if response.status_code == 200:
+        try:
+            ontology_data = response.json()
+        except json.JSONDecodeError as e:
+            print(f"Error decoding JSON from {ontology_url}: {e}")
+            print(f"Response content: {response.text}")
+            return
+    else:
+        print(f"Failed to fetch ontology from {ontology_url}. Status code: {response.status_code}")
+        print(f"Response content: {response.text}")
+        return
+
     ontology_graph = Graph()
     ontology_graph.parse(data=json.dumps(ontology_data), format="json-ld")
     used_ontology_graph = Graph()
     processed_lists = {}
     actual_domains = {}
     actual_ranges = {}
-    
-    for dataset_file in dataset_files:
-        with open(dataset_file, "r") as file:
-            dataset_data = json.load(file)
+
+    for dataset_data in jsonld_data_list:
         assertions = dataset_data.get("assertion", []) if isinstance(dataset_data, dict) else dataset_data
         for item in assertions:
             subject_type = item.get('@type', [None])[0]
@@ -124,6 +135,9 @@ def generate_ontology_with_context(dataset_files, ontology_url, output_file):
         adjust_domain_range(used_ontology_graph, URIRef(predicate), ranges, 'range')
 
     used_ontology_data = used_ontology_graph.serialize(format='json-ld', context=ontology_data['@context'], indent=2)
+    output_file = "Ontology.json"
     with open(output_file, "w") as file:
         file.write(used_ontology_data)
 
+    # Convert the JSON-LD file to Turtle format
+    convert_jsonld_to_ttl(output_file)
