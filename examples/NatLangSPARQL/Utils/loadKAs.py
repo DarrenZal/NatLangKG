@@ -6,8 +6,8 @@ from dkg import DKG
 from dkg.providers import BlockchainProvider, NodeHTTPProvider
 from dkg.constants import BLOCKCHAINS
 from dotenv import load_dotenv
-from Utils.KAtoOntologywContext import generate_ontology_with_context
-from Utils.KAtoOntology import generate_ontology
+from .KAtoOntologywContext import generate_ontology_with_context
+from .KAtoOntology import generate_ontology
 from rdflib import Graph
 
 load_dotenv()
@@ -44,7 +44,7 @@ def get_asset_data(ual):
         print(f"Error getting asset data for {ual}: {e}")
         return None
 
-async def load_kas_and_generate_ontology(ka_dids, output_file, ontology_url=None):
+async def load_kas_and_generate_ontology(ka_dids, ontology_url=None):
     ka_data_list = []
     for i, did in enumerate(ka_dids):
         ka_data = get_asset_data(did)
@@ -54,22 +54,20 @@ async def load_kas_and_generate_ontology(ka_dids, output_file, ontology_url=None
             ka_filename = f"ka_data_{i}.json"
             with open(ka_filename, 'w') as ka_file:
                 json.dump(ka_data, ka_file, indent=2)
-            print(f"KA data for {did} written to {ka_filename}")
 
     # Assuming generate_ontology accepts JSON-LD data directly
     if ontology_url:
-        generate_ontology_with_context(ka_data_list, ontology_url, output_file)
+        generate_ontology_with_context(ka_data_list, ontology_url)
     else:
-        generate_ontology(ka_data_list, output_file)
+        generate_ontology(ka_data_list)
 
-    print(f"Ontology file generated: {output_file}")
+    print(f"Ontology file generated: Ontology.ttl")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Load KAs and generate ontology")
     parser.add_argument("ka_dids", nargs="+", help="List of KA DIDs")
-    parser.add_argument("--output-file", default="ontology.ttl", help="Output file path for the generated ontology")
     parser.add_argument("--ontology-url", help="Ontology URL")
     args = parser.parse_args()
 
     # Use asyncio to run the main async function
-    asyncio.run(load_kas_and_generate_ontology(args.ka_dids, args.output_file, args.ontology_url))
+    asyncio.run(load_kas_and_generate_ontology(args.ka_dids, args.ontology_url))
