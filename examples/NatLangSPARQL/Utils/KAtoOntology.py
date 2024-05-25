@@ -26,7 +26,6 @@ def extract_prefixes(json_data):
     prefixes = {}
     
     def add_prefix(uri):
-        print(uri)
         prefix = uri.rsplit('#', 1)[0] + '#' if '#' in uri else uri.rsplit('/', 1)[0] + '/'
         if prefix not in prefixes.values():
             prefixes[f"p{len(prefixes)}"] = prefix
@@ -53,7 +52,6 @@ def extract_prefixes(json_data):
             extract_from_value(item)
 
     return prefixes
-
 
 def resolve_prefix(term, prefixes):
     """Resolve a term to its prefix and local name using the given prefixes."""
@@ -140,7 +138,7 @@ def convert_to_hashable(value):
     else:
         return value
 
-def process_jsonld_data(json_data, defined_entities, all_prefixes, classes, properties):
+def process_jsonld_data(json_data, defined_entities, all_prefixes, classes, properties, ontology_comments):
     prefixes = extract_prefixes(json_data)
     all_prefixes.update(prefixes)
 
@@ -187,7 +185,9 @@ def process_jsonld_data(json_data, defined_entities, all_prefixes, classes, prop
                 resolved_prop = f"{prefix}:{local_name}"
             else:
                 resolved_prop = prop
-            properties.setdefault(resolved_prop, {'domains': set(), 'ranges': set()})
+            properties.setdefault(resolved_prop, {'domains': set(), 'ranges': set(), 'comments': set()})
+            if resolved_prop in ontology_comments:
+                properties[resolved_prop]['comments'].add(ontology_comments[resolved_prop])
             if entity_types:
                 for type_uri in entity_types:
                     prefix, local_name = resolve_prefix(type_uri, prefixes)
@@ -327,15 +327,14 @@ def consolidate_classes(properties):
 
     return consolidation, consolidated_classes
 
-
 def apply_consolidation(properties, consolidation):
     # Apply the consolidation mapping to properties
     for prop, info in properties.items():
         new_domains = {consolidation.get(cls, cls) for cls in info['domains']}
         new_ranges = {consolidation.get(cls, cls) for cls in info['ranges']}
-        properties[prop] = {'domains': new_domains, 'ranges': new_ranges}
+        properties[prop] = {'domains': new_domains, 'ranges': new_ranges, 'comments': info['comments']}
 
-def generate_ontology(jsonld_data_list, output_file):
+def generate_ontology(jsonld_data_list, ontology_comments):
     classes = set()
     properties = {}
     defined_entities = {}  # Keep track of defined entities and their types
@@ -343,19 +342,15 @@ def generate_ontology(jsonld_data_list, output_file):
 
     # Process JSON-LD data
     for json_data in jsonld_data_list:
-        print("json_data")
-        print(json_data)
         prefixes = extract_prefixes(json_data)
         all_prefixes.update(prefixes)
-        print("all_prefixes")
-        print(all_prefixes)
-        process_jsonld_data(json_data, defined_entities, all_prefixes, classes, properties)
+        process_jsonld_data(json_data, defined_entities, all_prefixes, classes, properties, ontology_comments)
 
     consolidation, consolidated_classes = consolidate_classes(properties)
     apply_consolidation(properties, consolidation)
 
     # Writing the ontology with prefixes
-    with open(output_file, 'w') as file:
+    with open('Ontology.ttl', 'w') as file:
         file.write("@prefix owl: <http://www.w3.org/2002/07/owl#> .\n")
         file.write("@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n")
 
@@ -391,6 +386,11 @@ def generate_ontology(jsonld_data_list, output_file):
                 prop_write = f"<{prop_uri}>"
 
             file.write(f"{prop_write} a owl:ObjectProperty ;\n")
+
+            # Handle comments
+            if prop_info['comments']:
+                for comment in prop_info['comments']:
+                    file.write(f"    rdfs:comment \"{comment}\" ;\n")
 
             # Handle domains
             if prop_info['domains']:
