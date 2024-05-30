@@ -13,12 +13,12 @@ from rdflib import Graph
 load_dotenv()
 
 # Initialize the DKG client on OriginTrail DKG Testnet
-ot_node_hostname = os.getenv("OT_NODE_HOSTNAME") + ":8900"
+ot_node_hostname = os.getenv("OT_NODE_HOSTNAME_MAINNET")+":8900"
 node_provider = NodeHTTPProvider(ot_node_hostname)
 blockchain_provider = BlockchainProvider(
-    "testnet",
-    "otp:20430",
-    os.getenv("RPC_ENDPOINT"),
+    "mainnet",
+    "otp:2043",
+    os.getenv("RPC_ENDPOINT_MAINNET"),
     os.getenv("WALLET_PRIVATE_KEY")
 )
 
