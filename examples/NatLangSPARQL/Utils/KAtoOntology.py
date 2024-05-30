@@ -138,7 +138,7 @@ def convert_to_hashable(value):
     else:
         return value
 
-def process_jsonld_data(json_data, defined_entities, all_prefixes, classes, properties, ontology_comments):
+def process_jsonld_data(json_data, defined_entities, all_prefixes, classes, properties):
     prefixes = extract_prefixes(json_data)
     all_prefixes.update(prefixes)
 
@@ -185,9 +185,7 @@ def process_jsonld_data(json_data, defined_entities, all_prefixes, classes, prop
                 resolved_prop = f"{prefix}:{local_name}"
             else:
                 resolved_prop = prop
-            properties.setdefault(resolved_prop, {'domains': set(), 'ranges': set(), 'comments': set()})
-            if resolved_prop in ontology_comments:
-                properties[resolved_prop]['comments'].add(ontology_comments[resolved_prop])
+            properties.setdefault(resolved_prop, {'domains': set(), 'ranges': set()})
             if entity_types:
                 for type_uri in entity_types:
                     prefix, local_name = resolve_prefix(type_uri, prefixes)
@@ -332,9 +330,9 @@ def apply_consolidation(properties, consolidation):
     for prop, info in properties.items():
         new_domains = {consolidation.get(cls, cls) for cls in info['domains']}
         new_ranges = {consolidation.get(cls, cls) for cls in info['ranges']}
-        properties[prop] = {'domains': new_domains, 'ranges': new_ranges, 'comments': info['comments']}
+        properties[prop] = {'domains': new_domains, 'ranges': new_ranges}
 
-def generate_ontology(jsonld_data_list, ontology_comments):
+def generate_ontology(jsonld_data_list):
     classes = set()
     properties = {}
     defined_entities = {}  # Keep track of defined entities and their types
@@ -344,7 +342,7 @@ def generate_ontology(jsonld_data_list, ontology_comments):
     for json_data in jsonld_data_list:
         prefixes = extract_prefixes(json_data)
         all_prefixes.update(prefixes)
-        process_jsonld_data(json_data, defined_entities, all_prefixes, classes, properties, ontology_comments)
+        process_jsonld_data(json_data, defined_entities, all_prefixes, classes, properties)
 
     consolidation, consolidated_classes = consolidate_classes(properties)
     apply_consolidation(properties, consolidation)
@@ -386,11 +384,6 @@ def generate_ontology(jsonld_data_list, ontology_comments):
                 prop_write = f"<{prop_uri}>"
 
             file.write(f"{prop_write} a owl:ObjectProperty ;\n")
-
-            # Handle comments
-            if prop_info['comments']:
-                for comment in prop_info['comments']:
-                    file.write(f"    rdfs:comment \"{comment}\" ;\n")
 
             # Handle domains
             if prop_info['domains']:
