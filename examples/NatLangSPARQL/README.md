@@ -4,7 +4,7 @@ This repository contains two Python scripts that work together to enable natural
 
 ## Components
 
-1. `GenSPARQL.py`: This script takes in a natual language prompt along with a list of Knowledgfe Assets, and an optional ontology url.  It queries the DKG for the input Knowledge Assets, loads them into a graph db (A DKG node can currently only run SPARQL queries on it's own private + public data, which is why we don't just run the SPARQL on the DKG), generates an Ontology from the Knowledge Assets, and prompts an LLM to generate a SPARQL query for the natural language prompt and ontology. The generated query is then executed on the OriginTrail DKG to retrieve the relevant information, which is returned to the user.
+1. `GenSPARQL.py`: This script takes in a natual language prompt along with a list of Knowledge Assets, and an optional ontology url.  It queries the DKG for the input Knowledge Assets, loads them into a graph db (A DKG node can currently only run SPARQL queries on it's own private + public data, which is why we don't just run the SPARQL on the DKG), generates an Ontology from the Knowledge Assets, and prompts an LLM to generate a SPARQL query for the natural language prompt and ontology. The generated query is then executed to retrieve the relevant information, which is returned to the user.
 
 ## Pre-requisites
 
