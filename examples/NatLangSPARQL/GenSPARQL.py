@@ -4,8 +4,7 @@ import asyncio
 import argparse
 from dotenv import load_dotenv
 from openai import OpenAI
-from dkg import DKG
-from dkg.providers import BlockchainProvider, NodeHTTPProvider
+from rdflib import Graph
 from Utils.loadKAs import load_kas_and_generate_ontology
 
 load_dotenv()
@@ -18,29 +17,11 @@ def read_ontology_file(file_path):
         content = file.read()
     return content
 
-def execute_sparql_query(query):
+def execute_sparql_query(graph, query):
     try:
-        # Initialize the DKG client on OriginTrail DKG Testnet
-        ot_node_hostname = os.getenv("OT_NODE_HOSTNAME_MAINNET")+":8900"
-        node_provider = NodeHTTPProvider(ot_node_hostname)
-        blockchain_provider = BlockchainProvider(
-            "mainnet",
-            "otp:2043",
-            os.getenv("RPC_ENDPOINT_MAINNET"), 
-            os.getenv("WALLET_PRIVATE_KEY_MAINNET"),
-        )
-
-        # Initialize the DKG client
-        dkg = DKG(node_provider, blockchain_provider)
-
-        # Execute the query
-        query_graph_result = dkg.graph.query(query, repository="privateCurrent")
-
-        if query_graph_result:
-            return query_graph_result
-        else:
-            return []
-
+        # Execute the SPARQL query on the loaded graph
+        results = graph.query(query)
+        return results
     except Exception as e:
         print(f"Error during SPARQL query execution: {e}")
         return []
@@ -59,6 +40,7 @@ def generate_sparql_query(prompt, ontology_content):
                         "Your task is to create a SPARQL query that retrieves the relevant information from the knowledge graph to answer the given prompt. "
                         "Use the provided ontology to understand the structure and relationships of the data. "
                         "Ensure that the generated query respects the object properties' domain and range defined in the ontology. "
+                        "Include all necessary namespace prefixes in the SPARQL query. "
                         "If the prompt requires aggregation, make sure to aggregate the total values before applying any filters. "
                         "Include details like IDs or names in the query results for clarity. "
                         "Use 'DISTINCT' in the select when possible to avoid duplicate results. "
@@ -82,39 +64,54 @@ def generate_sparql_query(prompt, ontology_content):
         print(f"Error occurred during SPARQL query generation: {e}")
         return ""
 
-async def main(prompt, ontology_url=None):
-    ontology_file_path = "Ontology.ttl"
+async def main(prompt, ka_dids, ontology_url=None):
+    # Always re-fetch KA data and regenerate the ontology
+    graph = await load_kas_and_generate_ontology(ka_dids, ontology_url)
 
-    # Check if the ontology file exists
-    if not os.path.exists(ontology_file_path):
-        print("Ontology file not found. Please input a list of KA DIDs to generate the ontology.")
-        ka_dids = input("Enter KA DIDs separated by spaces: ").split()
-        ontology_url = input("Enter Ontology URL (or press Enter to skip): ").strip() or None
-        await load_kas_and_generate_ontology(ka_dids, ontology_url)
+    # Debugging: Print all triples in the graph
+    print("Loaded triples:")
+    for s, p, o in graph:
+        print(s, p, o)
 
-    # Check again to ensure the ontology file was created
-    if os.path.exists(ontology_file_path):
-        ontology_content = read_ontology_file(ontology_file_path)
+    # Simplified query for debugging
+    simplified_query = """
+    SELECT ?resource ?property ?value
+    WHERE {
+      ?resource a ?type .
+      ?resource ?property ?value .
+    }
+    LIMIT 20
+    """
+    query_results = execute_sparql_query(graph, simplified_query)
+    print("Simplified query results:")
+    for row in query_results:
+        print(f"Resource: {row.resource}, Property: {row.property}, Value: {row.value}")
 
-        # Generate the SPARQL query
-        generated_query = generate_sparql_query(prompt, ontology_content)
-        print("Generated SPARQL query:")
-        print(generated_query)
+    # Read the ontology content for generating SPARQL query
+    ontology_content = read_ontology_file("Ontology.ttl")
+    print("Ontology Content:")
+    print(ontology_content)
 
-        # Execute the generated SPARQL query
-        query_results = execute_sparql_query(generated_query)
-        print("Query results:")
-        print(json.dumps(query_results, indent=2))
-    else:
-        print("Failed to generate ontology file. Aborting.")
+    # Generate the SPARQL query
+    generated_query = generate_sparql_query(prompt, ontology_content)
+    print("Generated SPARQL query:")
+    print(generated_query)
+
+    # Execute the generated SPARQL query
+    query_results = execute_sparql_query(graph, generated_query)
+    print("Query results:")
+    for row in query_results:
+        print(row)
 
 if __name__ == "__main__":
     # Set up argument parser
     parser = argparse.ArgumentParser(description="Generate and execute SPARQL queries based on a given prompt.")
     parser.add_argument("prompt", type=str, help="The natural language prompt to generate the SPARQL query.")
+    parser.add_argument("ka_dids", nargs='+', help="List of KA DIDs.")
+    parser.add_argument("--ontology-url", type=str, help="Ontology URL", default=None)
 
     # Parse arguments
     args = parser.parse_args()
 
     # Run the async main function
-    asyncio.run(main(args.prompt))
+    asyncio.run(main(args.prompt, args.ka_dids, args.ontology_url))
