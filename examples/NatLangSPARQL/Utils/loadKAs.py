@@ -2,18 +2,17 @@ import argparse
 import json
 import os
 import asyncio
+from dotenv import load_dotenv
 from dkg import DKG
 from dkg.providers import BlockchainProvider, NodeHTTPProvider
-from dkg.constants import BLOCKCHAINS
-from dotenv import load_dotenv
+from rdflib import Graph
 from .KAtoOntologywContext import generate_ontology_with_context
 from .KAtoOntology import generate_ontology
-from rdflib import Graph
 
 load_dotenv()
 
 # Initialize the DKG client on OriginTrail DKG Testnet
-ot_node_hostname = os.getenv("OT_NODE_HOSTNAME_MAINNET")+":8900"
+ot_node_hostname = os.getenv("OT_NODE_HOSTNAME_MAINNET") + ":8900"
 node_provider = NodeHTTPProvider(ot_node_hostname)
 blockchain_provider = BlockchainProvider(
     "mainnet",
@@ -24,7 +23,6 @@ blockchain_provider = BlockchainProvider(
 
 # Initialize the DKG client
 dkg = DKG(node_provider, blockchain_provider)
-
 
 def get_asset_data(ual):
     try:
@@ -54,6 +52,19 @@ async def load_kas_and_generate_ontology(ka_dids, ontology_url=None):
             ka_filename = f"ka_data_{i}.json"
             with open(ka_filename, 'w') as ka_file:
                 json.dump(ka_data, ka_file, indent=2)
+    
+    if not ka_data_list:
+        raise ValueError("No valid KA data found to generate ontology.")
+
+    # Initialize an RDFLib Graph
+    graph = Graph()
+
+    # Load JSON-LD data into the graph
+    for ka_data in ka_data_list:
+        graph.parse(data=json.dumps(ka_data), format='json-ld')
+
+    # Save the graph to a file (optional)
+    graph.serialize(destination='graph_data.ttl', format='turtle')
 
     # Assuming generate_ontology accepts JSON-LD data directly
     if ontology_url:
@@ -62,6 +73,9 @@ async def load_kas_and_generate_ontology(ka_dids, ontology_url=None):
         generate_ontology(ka_data_list)
 
     print(f"Ontology file generated: Ontology.ttl")
+    print(f"Graph data stored: graph_data.ttl")
+
+    return graph
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Load KAs and generate ontology")
@@ -70,4 +84,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Use asyncio to run the main async function
-    asyncio.run(load_kas_and_generate_ontology(args.ka_dids, args.ontology_url))
+    graph = asyncio.run(load_kas_and_generate_ontology(args.ka_dids, args.ontology_url))
