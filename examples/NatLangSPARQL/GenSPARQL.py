@@ -68,25 +68,6 @@ async def main(prompt, ka_dids, ontology_url=None):
     # Always re-fetch KA data and regenerate the ontology
     graph = await load_kas_and_generate_ontology(ka_dids, ontology_url)
 
-    # Debugging: Print all triples in the graph
-    print("Loaded triples:")
-    for s, p, o in graph:
-        print(s, p, o)
-
-    # Simplified query for debugging
-    simplified_query = """
-    SELECT ?resource ?property ?value
-    WHERE {
-      ?resource a ?type .
-      ?resource ?property ?value .
-    }
-    LIMIT 20
-    """
-    query_results = execute_sparql_query(graph, simplified_query)
-    print("Simplified query results:")
-    for row in query_results:
-        print(f"Resource: {row.resource}, Property: {row.property}, Value: {row.value}")
-
     # Read the ontology content for generating SPARQL query
     ontology_content = read_ontology_file("Ontology.ttl")
     print("Ontology Content:")
