@@ -1,8 +1,9 @@
 import json
 import requests
 from rdflib import Graph, URIRef, BNode, RDF, RDFS, Literal, OWL
-from TTLtoJSON import ttl_to_json
+from .TTLtoJSON import ttl_to_json
 from rdflib import Namespace
+from .JSONLDtoTTL import convert_jsonld_to_ttl
 
 def create_rdf_list(union_list, graph):
     if not union_list:
@@ -49,41 +50,53 @@ def adjust_domain_range(graph, uri, new_values, property_type):
             union_bnode = create_rdf_list(list(new_values), graph)
             graph.add((uri, prop_uri, union_bnode))
 
-def extract_used_ontology(dataset_files, output_file):
+def generate_ontology_contextLookup(jsonld_data_list):
     ontology_urls = {}
-    for dataset_file in dataset_files:
-        with open(dataset_file, "r") as file:
-            dataset_data = json.load(file)
+    for dataset_data in jsonld_data_list:
         assertions = dataset_data.get("assertion", []) if isinstance(dataset_data, dict) else dataset_data
         for item in assertions:
             for predicate in item:
                 if predicate.startswith("@") or predicate.startswith("_:"):
                     continue
-                if predicate.startswith("https://w3id.org/valueflows/ont/vf#"):
-                    ontology_url = "https://w3id.org/valueflows/ont/vf"
+                if predicate.startswith("http://schema.org/"):
+                    ontology_url = "https://schema.org/version/latest/schemaorg-current-https.jsonld"
                     ontology_urls[ontology_url] = ontology_urls.get(ontology_url, 0) + 1
                 else:
-                    ontology_url = predicate.rsplit('/', 1)[0] + '/'
+                    ontology_url = predicate.rsplit('#', 1)[0]
+                    if not ontology_url.endswith('/'):
+                        ontology_url += '/'
                     ontology_urls[ontology_url] = ontology_urls.get(ontology_url, 0) + 1
 
     if not ontology_urls:
         raise ValueError("No ontology URLs found in the dataset.")
 
     main_ontology_url = max(ontology_urls, key=ontology_urls.get)
+    print("main_ontology_url")
+    print(main_ontology_url)
 
     ontology_data = None
     for ontology_url in ontology_urls:
         try:
-            response = requests.get(ontology_url, headers={'Accept': 'application/rdf'}, allow_redirects=True)
-            content_type = response.headers.get('Content-Type')
-            if 'text/turtle' in content_type or 'text/plain' in content_type:
-                ontology_data_ttl = response.text
-                ontology_data = ttl_to_json(ontology_data_ttl)
-            elif 'application/json' in content_type:
+            if ontology_url.startswith("https://schema.org/"):
+                response = requests.get(ontology_url)
                 ontology_data = response.json()
             else:
-                print(f"Unsupported Content-Type: {content_type} for ontology URL: {ontology_url}")
-                continue
+                ontology_url_no_slash = ontology_url.rstrip('/')
+                response = requests.get(ontology_url_no_slash, headers={'Accept': 'text/turtle, application/rdf+xml, application/ld+json'}, allow_redirects=True)
+                content_type = response.headers.get('Content-Type')
+                if 'text/turtle' in content_type or 'text/plain' in content_type:
+                    ontology_data_ttl = response.text
+                    ontology_data = ttl_to_json(ontology_data_ttl)
+                elif 'application/rdf+xml' in content_type:
+                    ontology_data_rdf = response.text
+                    g = Graph()
+                    g.parse(data=ontology_data_rdf, format='xml')
+                    ontology_data = json.loads(g.serialize(format='json-ld'))
+                elif 'application/ld+json' in content_type or 'application/json' in content_type:
+                    ontology_data = response.json()
+                else:
+                    print(f"Unsupported Content-Type: {content_type} for ontology URL: {ontology_url}")
+                    continue
 
             if ontology_url == main_ontology_url:
                 break
@@ -101,9 +114,7 @@ def extract_used_ontology(dataset_files, output_file):
     processed_lists = {}
     used_ontology_graph = Graph()
     
-    for dataset_file in dataset_files:
-        with open(dataset_file, "r") as file:
-            dataset_data = json.load(file)
+    for dataset_data in jsonld_data_list:
         assertions = dataset_data.get("assertion", []) if isinstance(dataset_data, dict) else dataset_data
         for item in assertions:
             subject_type = item.get('@type', [None])[0]
@@ -165,5 +176,9 @@ def extract_used_ontology(dataset_files, output_file):
 
     # Serialize the used ontology graph with the updated context
     used_ontology_data = used_ontology_graph.serialize(format='json-ld', context=context["@context"], indent=2)
+    output_file = "Ontology.json"
     with open(output_file, "w") as file:
         file.write(used_ontology_data)
+
+    # Convert the JSON-LD file to Turtle format
+    convert_jsonld_to_ttl(output_file)
