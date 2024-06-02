@@ -8,6 +8,7 @@ from dkg.providers import BlockchainProvider, NodeHTTPProvider
 from rdflib import Graph
 from .KAtoOntologywContext import generate_ontology_with_context
 from .KAtoOntology import generate_ontology
+from .KAtoOntologywContextLookup import generate_ontology_contextLookup
 
 load_dotenv()
 
@@ -70,7 +71,12 @@ async def load_kas_and_generate_ontology(ka_dids, ontology_url=None):
     if ontology_url:
         generate_ontology_with_context(ka_data_list, ontology_url)
     else:
-        generate_ontology(ka_data_list)
+        try:
+            generate_ontology_contextLookup(ka_data_list)
+        except Exception as e:
+            print(f"Error generating ontology with context lookup: {str(e)}")
+            print("Falling back to generating ontology without context lookup.")
+            generate_ontology(ka_data_list)
 
     print(f"Ontology file generated: Ontology.ttl")
     print(f"Graph data stored: graph_data.ttl")
