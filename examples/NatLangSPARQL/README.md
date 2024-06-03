@@ -1,6 +1,6 @@
 # AI-Powered SPARQL Query Generator and Executor
 
-This repository contains two Python scripts that work together to enable natural language querying of Knowledge Assets (KAs) stored in the OriginTrail Decentralized Knowledge Graph (DKG) using AI-generated SPARQL queries.
+This repository contains Python scripts that work together to enable natural language querying of Knowledge Assets (KAs) stored in the OriginTrail Decentralized Knowledge Graph (DKG) using AI-generated SPARQL queries.
 
 ## Components
 
