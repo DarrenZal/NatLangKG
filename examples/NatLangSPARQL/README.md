@@ -24,13 +24,13 @@ This repository contains Python scripts that work together to enable natural lan
    cd NatLangKG/examples/NatLangSPARQL
    ```   
 
-2. Create and activate a virtual environment:
+3. Create and activate a virtual environment:
    ```bash
    python3 -m venv env
    source env/bin/activate
    ```
 
-3. Install the required Python packages:
+4. Install the required Python packages:
    ```bash
    pip install -r requirements.txt
    ```
