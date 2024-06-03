@@ -19,6 +19,11 @@ This repository contains Python scripts that work together to enable natural lan
    git clone https://github.com/your-username/your-repository.git
    ```
 
+2. Navigate to main directory:
+   ```bash
+   cd NatLangKG/examples/NatLangSPARQL
+   ```   
+
 2. Create and activate a virtual environment:
    ```bash
    python3 -m venv env
