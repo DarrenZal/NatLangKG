@@ -64,8 +64,13 @@ python GenSPARQL.py "<NATURAL_LANGUAGE_PROMPT>" <KA_DID_1> <KA_DID_2> ... <KA_DI
 ```
 
 - `"<NATURAL_LANGUAGE_PROMPT>"`: The natural language prompt describing the information you want to retrieve from the KAs.
-- `<KA_DID_1>`, `<KA_DID_2>`, ..., `<KA_DID_N>`: The list of Knowledge Asset DIDs to be processed. For example: `did:dkg:otp/0x1a061136ed9f5ed69395f18961a0a535ef4b3e5f/2679613`.
+- `<KA_DID_1>`, `<KA_DID_2>`, ..., `<KA_DID_N>`: The list of Knowledge Asset DIDs to be processed.
 - `--ontology-url <ONTOLOGY_URL>` (optional): The URL that returns a JSON-LD Ontology representing the entire ontology used by the data. If provided, the script will extract the subset of the ontology used by the specified KAs.
+
+Example:
+```
+python GenSPARQL.py "Find the total accounting value of all economic resources" did:dkg:otp:2043/0x5cac41237127f94c2d21dae0b14bfefa99880630/6632018
+```
 
 
 ## Contributing
