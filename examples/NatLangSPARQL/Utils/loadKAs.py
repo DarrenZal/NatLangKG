@@ -67,6 +67,7 @@ async def load_kas_and_generate_ontology(ka_dids, ontology_url=None):
     # Save the graph to a file (optional)
     graph.serialize(destination='graph_data.ttl', format='turtle')
 
+    #generate ontology from data
     if ontology_url:
         generate_ontology_with_context(ka_data_list, ontology_url)
     else:
