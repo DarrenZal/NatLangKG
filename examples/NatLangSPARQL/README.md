@@ -9,7 +9,7 @@ This repository contains Python scripts that work together to enable natural lan
 ## Pre-requisites
 
 - Python 3.10 or higher.
-- Access to an OriginTrail DKG node. You can setup your own by following instructions [here](https://docs.origintrail.io/decentralized-knowledge-graph-layer-2/testnet-node-setup-instructions/setup-instructions-dockerless)
+- Access to an OriginTrail DKG node. You can setup your own by following instructions [here](https://docs.origintrail.io/decentralized-knowledge-graph-layer-2/testnet-node-setup-instructions/setup-instructions-dockerless).  Note, you will need to whitelist the IP of the machine running this code so your node will accept requests, instructions [here](https://docs.origintrail.io/decentralized-knowledge-graph/node-setup-instructions/useful-resources/manually-configuring-your-node).
 - OpenAI API key
 
 ## Installation
