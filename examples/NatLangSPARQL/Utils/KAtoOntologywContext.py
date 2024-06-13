@@ -120,14 +120,6 @@ def generate_ontology_with_context(jsonld_data_list, ontology_url):
                         else:
                             used_ontology_graph.add((s, p, o))
 
-    print("Actual domains found in the dataset:")
-    for predicate, domains in actual_domains.items():
-        print(f"{predicate}: {domains}")
-
-    print("Actual ranges found in the dataset:")
-    for predicate, ranges in actual_ranges.items():
-        print(f"{predicate}: {ranges}")
-
     # Now handle updating domains and ranges based on actual usage
     for predicate, domains in actual_domains.items():
         adjust_domain_range(used_ontology_graph, URIRef(predicate), domains, 'domain')
@@ -141,3 +133,76 @@ def generate_ontology_with_context(jsonld_data_list, ontology_url):
 
     # Convert the JSON-LD file to Turtle format
     convert_jsonld_to_ttl(output_file)
+
+    # Validate dataset against the ontology
+    validate_dataset_against_ontology(jsonld_data_list, used_ontology_graph)
+
+def validate_dataset_against_ontology(jsonld_data_list, ontology_graph):
+    def get_valid_domains(ontology_graph, predicate_uri):
+        domains = set()
+        for domain in ontology_graph.objects(predicate_uri, RDFS.domain):
+            if isinstance(domain, BNode):
+                print(f"Processing domain BNode: {domain} for predicate: {predicate_uri}")
+                current_list_node = ontology_graph.value(domain, OWL.unionOf)
+                if current_list_node:
+                    while current_list_node and current_list_node != RDF.nil:
+                        union_item = ontology_graph.value(current_list_node, RDF.first)
+                        if union_item:
+                            domains.add(str(union_item))
+                        current_list_node = ontology_graph.value(current_list_node, RDF.rest)
+                else:
+                    for item in ontology_graph.items(domain):
+                        domains.add(str(item))
+            else:
+                domains.add(str(domain))
+        return domains
+
+    def get_valid_ranges(ontology_graph, predicate_uri):
+        ranges = set()
+        for range_ in ontology_graph.objects(predicate_uri, RDFS.range):
+            if isinstance(range_, BNode):
+                print(f"Processing range BNode: {range_} for predicate: {predicate_uri}")
+                current_list_node = ontology_graph.value(range_, OWL.unionOf)
+                if current_list_node:
+                    while current_list_node and current_list_node != RDF.nil:
+                        union_item = ontology_graph.value(current_list_node, RDF.first)
+                        if union_item:
+                            ranges.add(str(union_item))
+                        current_list_node = ontology_graph.value(current_list_node, RDF.rest)
+                else:
+                    for item in ontology_graph.items(range_):
+                        ranges.add(str(item))
+            else:
+                ranges.add(str(range_))
+        return ranges
+
+    for dataset_data in jsonld_data_list:
+        assertions = dataset_data.get("assertion", []) if isinstance(dataset_data, dict) else dataset_data
+        for item in assertions:
+            subject_type = item.get('@type', [None])[0]
+            print(f"Validating subject: {item.get('@id')} with type: {subject_type}")
+            for predicate, objects in item.items():
+                if predicate.startswith("@"):
+                    continue
+                predicate_uri = URIRef(predicate)
+                valid_domains = get_valid_domains(ontology_graph, predicate_uri)
+                valid_ranges = get_valid_ranges(ontology_graph, predicate_uri)
+                print(f"Valid domains for predicate '{predicate}': {valid_domains}")
+                print(f"Valid ranges for predicate '{predicate}': {valid_ranges}")
+                # Validate subject type against the ontology
+                if subject_type:
+                    if str(subject_type) not in valid_domains:
+                        raise ValueError(f"Invalid subject type '{subject_type}' for predicate '{predicate}'")
+                for obj in objects:
+                    if isinstance(obj, dict):
+                        if '@id' in obj:
+                            object_type = obj.get('@type', [None])[0]
+                            if object_type:
+                                if str(object_type) not in valid_ranges:
+                                    raise ValueError(f"Invalid object type '{object_type}' for predicate '{predicate}'")
+                        elif '@value' in obj:
+                            if "http://www.w3.org/2001/XMLSchema#string" not in valid_ranges:
+                                raise ValueError(f"Invalid literal type for predicate '{predicate}'")
+    print("")
+    print("Dataset validated")
+    print("")
