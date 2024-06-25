@@ -1,0 +1,132 @@
+{
+    "@context": {
+      "vf": "https://w3id.org/valueflows/ont/vf#",
+      "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+      "xsd": "http://www.w3.org/2001/XMLSchema#"
+    },
+    "@graph": [
+      {
+        "@id": "ex:event1",
+        "@type": "vf:EconomicEvent",
+        "vf:action": {"@id": "vf:transfer"},
+        "vf:provider": {"@id": "ex:farmCoop"},
+        "vf:receiver": {"@id": "ex:localStore"},
+        "vf:resourceInventoriedAs": {"@id": "ex:apples"},
+        "vf:resourceQuantity": {
+          "@type": "vf:Measure",
+          "vf:hasNumericalValue": "100",
+          "vf:hasUnit": {"@id": "ex:kg"}
+        },
+        "vf:hasPointInTime": "2023-06-15T14:30:00Z"
+      },
+      {
+        "@id": "ex:event2",
+        "@type": "vf:EconomicEvent",
+        "vf:action": {"@id": "vf:produce"},
+        "vf:provider": {"@id": "ex:farmCoop"},
+        "vf:resourceInventoriedAs": {"@id": "ex:apples"},
+        "vf:resourceQuantity": {
+          "@type": "vf:Measure",
+          "vf:hasNumericalValue": "500",
+          "vf:hasUnit": {"@id": "ex:kg"}
+        },
+        "vf:hasPointInTime": "2023-06-14T10:00:00Z"
+      },
+      {
+        "@id": "ex:event3",
+        "@type": "vf:EconomicEvent",
+        "vf:action": {"@id": "vf:use"},
+        "vf:provider": {"@id": "ex:farmCoop"},
+        "vf:resourceInventoriedAs": {"@id": "ex:tractor"},
+        "vf:effortQuantity": {
+          "@type": "vf:Measure",
+          "vf:hasNumericalValue": "8",
+          "vf:hasUnit": {"@id": "ex:hour"}
+        },
+        "vf:hasPointInTime": "2023-06-14T08:00:00Z"
+      },
+      {
+        "@id": "ex:event4",
+        "@type": "vf:EconomicEvent",
+        "vf:action": {"@id": "vf:consume"},
+        "vf:provider": {"@id": "ex:farmCoop"},
+        "vf:resourceInventoriedAs": {"@id": "ex:fertilizer"},
+        "vf:resourceQuantity": {
+          "@type": "vf:Measure",
+          "vf:hasNumericalValue": "50",
+          "vf:hasUnit": {"@id": "ex:kg"}
+        },
+        "vf:hasPointInTime": "2023-06-13T09:00:00Z"
+      },
+      {
+        "@id": "ex:process1",
+        "@type": "vf:Process",
+        "rdfs:label": "Apple Harvesting",
+        "vf:basedOn": {"@id": "ex:appleHarvestingProcess"}
+      },
+      {
+        "@id": "ex:commitment1",
+        "@type": "vf:Commitment",
+        "vf:provider": {"@id": "ex:farmCoop"},
+        "vf:receiver": {"@id": "ex:localStore"},
+        "vf:resourceInventoriedAs": {"@id": "ex:apples"},
+        "vf:resourceQuantity": {
+          "@type": "vf:Measure",
+          "vf:hasNumericalValue": "1000",
+          "vf:hasUnit": {"@id": "ex:kg"}
+        },
+        "vf:hasPointInTime": "2023-07-01T00:00:00Z"
+      },
+      {
+        "@id": "ex:farmCoop",
+        "@type": "vf:Agent",
+        "rdfs:label": "Farm Cooperative"
+      },
+      {
+        "@id": "ex:localStore",
+        "@type": "vf:Agent",
+        "rdfs:label": "Local Grocery Store"
+      },
+      {
+        "@id": "ex:apples",
+        "@type": "vf:EconomicResource",
+        "rdfs:label": "Organic Apples",
+        "vf:classifiedAs": "ex:FruitProduct",
+        "vf:currentLocation": {"@id": "ex:farmLocation"}
+      },
+      {
+        "@id": "ex:tractor",
+        "@type": "vf:EconomicResource",
+        "rdfs:label": "Farm Tractor",
+        "vf:classifiedAs": "ex:Equipment"
+      },
+      {
+        "@id": "ex:fertilizer",
+        "@type": "vf:EconomicResource",
+        "rdfs:label": "Organic Fertilizer",
+        "vf:classifiedAs": "ex:AgriculturalInput"
+      },
+      {
+        "@id": "ex:farmLocation",
+        "@type": "vf:SpatialThing",
+        "rdfs:label": "Apple Orchard",
+        "vf:lat": "42.3601",
+        "vf:long": "-71.0589"
+      },
+      {
+        "@id": "ex:appleHarvestingProcess",
+        "@type": "vf:ProcessSpecification",
+        "rdfs:label": "Apple Harvesting Process"
+      },
+      {
+        "@id": "ex:kg",
+        "@type": "vf:Unit",
+        "rdfs:label": "kilogram"
+      },
+      {
+        "@id": "ex:hour",
+        "@type": "vf:Unit",
+        "rdfs:label": "hour"
+      }
+    ]
+  }
