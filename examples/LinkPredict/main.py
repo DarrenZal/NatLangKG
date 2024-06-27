@@ -358,7 +358,7 @@ train_loader = LinkNeighborLoader(
     neg_sampling_ratio=1.0,
     edge_label_index=(edge_type, train_data[edge_type].edge_label_index),
     edge_label=train_data[edge_type].edge_label,
-    batch_size=32,
+    batch_size=64,
     shuffle=True,
 )
 
@@ -436,7 +436,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-5)
 
 # In the training loop
 print("Start training loop...")
-for epoch in range(1, 91):
+for epoch in range(1, 61):
     model.train()
     total_loss = total_examples = 0
     for batch in tqdm.tqdm(train_loader):
