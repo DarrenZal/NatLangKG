@@ -280,7 +280,7 @@ def train_and_evaluate(jsonld_file, link_type):
 
     # Training loop
     print("Start training loop...")
-    for epoch in range(1, 6):
+    for epoch in range(1, 61):
         model.train()
         total_loss = total_examples = 0
         for batch in tqdm.tqdm(train_loader):
