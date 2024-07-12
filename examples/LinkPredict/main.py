@@ -11,11 +11,55 @@ import sys
 import torch_geometric
 from sklearn.metrics import roc_auc_score
 import psutil
+from dkg import DKG
+from dkg.providers import BlockchainProvider, NodeHTTPProvider
+import os
+from dotenv import load_dotenv
+from datetime import datetime
+
+load_dotenv()
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
+# Initialize DKG
+ot_node_hostname = os.getenv("OT_NODE_HOSTNAME_MAINNET") + ":8900"
+node_provider = NodeHTTPProvider(ot_node_hostname)
+blockchain_provider = BlockchainProvider(
+    "mainnet",
+    "otp:2043",
+    os.getenv("RPC_ENDPOINT_MAINNET"),
+    os.getenv("WALLET_PRIVATE_KEY_MAINNET"),
+    900
+)
+
+# Initialize the DKG client
+dkg = DKG(node_provider, blockchain_provider)
+
 def print_memory_usage():
     print(f"CPU Memory: {psutil.Process().memory_info().rss / (1024 * 1024):.2f} MB")
+
+def load_ka_data(ka_list):
+    print("Loading Knowledge Asset data...")
+    combined_data = {"assertion": []}
+    for ka in ka_list:
+        try:
+            get_asset_result = dkg.asset.get(ka, "LATEST", "ALL", 'N-Quads', False)
+            if 'public' in get_asset_result and 'assertion' in get_asset_result['public']:
+                combined_data["assertion"].extend(get_asset_result['public']['assertion'])
+            else:
+                print(f"No assertion data found for KA: {ka}")
+                print(f"Received data structure: {get_asset_result.keys()}")
+        except Exception as e:
+            print(f"Error getting asset data for {ka}: {e}")
+    
+    print(f"Knowledge Asset data loaded. Total assertions: {len(combined_data['assertion'])}")
+    
+    # Add this debug print to see the structure of the first few assertions
+    if combined_data["assertion"]:
+        print("Sample of first assertion:")
+        print(json.dumps(combined_data["assertion"][0], indent=2))
+    
+    return combined_data
 
 def load_jsonld(file_path):
     print("Loading JSON-LD data...")
@@ -194,12 +238,12 @@ class Model(torch.nn.Module):
         x_dict = self.gnn(x_dict, edge_index_dict)
         return self.classifier(x_dict, edge_label_index)
 
-def train_and_evaluate(jsonld_file, link_type):
+def train_and_evaluate(ka_list, link_type):
     # Load and preprocess data
     print("Starting data load and preprocessing...")
     try:
-        jsonld_data = load_jsonld(jsonld_file)
-        data = create_hetero_data_from_jsonld(jsonld_data, link_type)
+        combined_data = load_ka_data(ka_list)
+        data = create_hetero_data_from_jsonld(combined_data['assertion'], link_type)
     except Exception as e:
         print(f"Error during data loading and preprocessing: {str(e)}")
         traceback.print_exc()
@@ -360,11 +404,11 @@ def train_and_evaluate(jsonld_file, link_type):
         print("No valid predictions or ground truth for validation")
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print("Usage: python script.py <jsonld_file> <link_type>")
-        print("Example: python script.py data.jsonld '(InvestmentOrGrant,investee,Organization)'")
+    if len(sys.argv) < 3:
+        print("Usage: python script.py <KA_1> <KA_2> ... <KA_N> <link_type>")
+        print("Example: python link.py did:dkg:otp:2043/0x5cac41237127f94c2d21dae0b14bfefa99880630/6632018 did:dkg:otp:2043/0x5cac41237127f94c2d21dae0b14bfefa99880630/6632019 '(InvestmentOrGrant,investee,Organization)'")
         sys.exit(1)
 
-    jsonld_file = sys.argv[1]
-    link_type = eval(sys.argv[2])  # Convert string to tuple
-    train_and_evaluate(jsonld_file, link_type)
+    ka_list = sys.argv[1:-1]  # All arguments except the last one are KAs
+    link_type = eval(sys.argv[-1])  # The last argument is the link_type
+    train_and_evaluate(ka_list, link_type)
