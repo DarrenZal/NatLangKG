@@ -421,7 +421,7 @@ def train_and_evaluate(ka_list, link_type):
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
-        print("Usage: python script.py <KA_1> <KA_2> ... <KA_N> <link_type>")
+        print("Usage: python main.py <KA_1> <KA_2> ... <KA_N> <link_type>")
         print('Example: python main.py did:dkg:otp:2043/0x5cac41237127f94c2d21dae0b14bfefa99880630/7695243 \'("InvestmentOrGrant", "investee", "Organization")\' ')
         sys.exit(1)
 
