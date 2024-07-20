@@ -403,10 +403,26 @@ def train_and_evaluate(ka_list, link_type):
     else:
         print("No valid predictions or ground truth for validation")
 
+    # Save the model
+    torch.save(model.state_dict(), 'trained_model.pth')
+    print("Model saved to 'trained_model.pth'")
+
+    # Save other relevant data
+    torch.save({
+        'model_state_dict': model.state_dict(),
+        'hidden_channels': 64,  
+        'metadata': data.metadata(),
+        'link_type': link_type,
+        'node_types': list(data.node_types),
+        'edge_types': list(data.edge_types),
+        'num_nodes': {node_type: data[node_type].num_nodes for node_type in data.node_types}
+    }, 'model_data.pth')
+    print("Model data saved to 'model_data.pth'")
+
 if __name__ == "__main__":
     if len(sys.argv) < 3:
         print("Usage: python script.py <KA_1> <KA_2> ... <KA_N> <link_type>")
-        print("Example: python link.py did:dkg:otp:2043/0x5cac41237127f94c2d21dae0b14bfefa99880630/6632018 did:dkg:otp:2043/0x5cac41237127f94c2d21dae0b14bfefa99880630/6632019 '(InvestmentOrGrant,investee,Organization)'")
+        print('Example: python main.py did:dkg:otp:2043/0x5cac41237127f94c2d21dae0b14bfefa99880630/7695243 \'("InvestmentOrGrant", "investee", "Organization")\' ')
         sys.exit(1)
 
     ka_list = sys.argv[1:-1]  # All arguments except the last one are KAs
