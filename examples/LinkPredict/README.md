@@ -26,3 +26,19 @@ pip install tqdm
 
 # Install the Jupyter kernel
 python -m ipykernel install --user --name=PyG
+```
+
+## Usage
+
+To train the GNN to predict links for a set of knowledge asset, for a given pink type, run the following command:
+
+```bash
+python main.py <KA_1> <KA_2> ... <KA_N> <link_type>
+```
+- `<KA_DID_1>`, `<KA_DID_2>`, ..., `<KA_DID_N>`: The list of Knowledge Asset DIDs to be processed.
+- `<link_type>` The link type to train for prediction.  should be in the format '("subjectType", "LinkType", "ObjectType")'
+
+Example:
+```
+python main.py did:dkg:otp:2043/0x5cac41237127f94c2d21dae0b14bfefa99880630/7695243 '("InvestmentOrGrant", "investee", "Organization")' 
+```
