@@ -30,7 +30,7 @@ python -m ipykernel install --user --name=PyG
 
 ## Usage
 
-To train the GNN to predict links for a set of knowledge asset, for a given pink type, run the following command:
+To train the GNN to predict links for a set of knowledge asset, for a given link type, run the following command:
 
 ```bash
 python main.py <KA_1> <KA_2> ... <KA_N> <link_type>
